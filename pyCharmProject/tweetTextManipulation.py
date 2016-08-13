@@ -70,7 +70,3 @@ def remove_bad_codes_from_tweet(tweet):
 def get_normalized_tweets(filename):
     tweets = extract_tweets_from_file(filename)
     return normalize_tweets(tweets)
-
-
-str = "bala, baasfas, ,, asfast"
-print str.replace(",", " ")

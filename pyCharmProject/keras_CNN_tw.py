@@ -15,33 +15,33 @@ from keras.layers.convolutional import Convolution1D, MaxPooling1D
 from twitterData import *
 from gensim import corpora
 from tweets_to_vectors import *
+from keras.utils import np_utils
+from keras.optimizers import SGD
 
 
 # set parameters:
-max_features = 50000
-maxlen = 100
+max_features = 40000
+maxlen = 20
 batch_size = 32
-embedding_dims = 100
+embedding_dims = 220
 nb_filter = 250
-filter_length = 7
+filter_length = 3
 hidden_dims = 250
-nb_epoch = 2
+nb_epoch = 6
+nb_classes =6
 
 print('Loading data...')
 
-X_train, y_train = create_tweets_data(["train_data/auto_tweets", "train_data/education_tweets", "train_data/fashion_tweets", "train_data/music_tweets", "train_data/science_tweets", "train_data/sport_tweets", "train_data/politics_tweets"])
+X_train, y_train = create_tweets_data(["train_data/auto_tweets",  "train_data/fashion_tweets", "train_data/music_tweets", "train_data/science_tweets", "train_data/sport_tweets", "train_data/politics_tweets"])
 
-X_test, y_test = create_tweets_data(["test_data/tw_auto_test", "test_data/tw_education_test", "test_data/tw_fashion_test","test_data/tw_music_test","test_data/tw_science_test", "test_data/tw_sport_test", "test_data/tw_politics_test"])
+X_test, y_test = create_tweets_data(["test_data/tw_auto_test", "test_data/tw_fashion_test","test_data/tw_music_test","test_data/tw_science_test", "test_data/tw_sport_test", "test_data/tw_politics_test"])
 #Loading dictionary
 dictionary = corpora.Dictionary
 my_dict = dictionary.load('test_dict.dict')
 X_train = transfrom_tweets_to_arrays(my_dict, X_train)
-X_train = np.array(X_train)
-y_train = np.array(y_train)
 X_test = transfrom_tweets_to_arrays(my_dict, X_test)
-X_test = np.array(X_test)
-y_test = np.array(y_test)
-alphabet = ["auto", "education", "fashion", "music", "science", "sport", "politics"]
+
+alphabet = ["auto", "fashion", "music", "science", "sport", "politics"]
 print(len(X_train), 'train sequences')
 print(len(X_test), 'test sequences')
 
@@ -50,6 +50,9 @@ X_train = sequence.pad_sequences(X_train, maxlen=maxlen, padding='post')
 X_test = sequence.pad_sequences(X_test, maxlen=maxlen, padding='post')
 print('X_train shape:', X_train.shape)
 print('X_test shape:', X_test.shape)
+
+Y_train = np_utils.to_categorical(y_train, nb_classes)
+Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 print('Build model...')
 model = Sequential()
@@ -75,21 +78,22 @@ model.add(Flatten())
 
 # We add a vanilla hidden layer:
 model.add(Dense(hidden_dims))
-model.add(Dropout(0.25))
 model.add(Activation('relu'))
+model.add(Dropout(0.25))
 
-# We project onto a single unit output layer, and squash it with a sigmoid:
-model.add(Dense(1))
-model.add(Activation('sigmoid'))
 
-model.compile(loss='binary_crossentropy',
-              optimizer='rmsprop',
-              class_mode='binary')
-model.fit(X_train, y_train, batch_size=batch_size,
-          nb_epoch=nb_epoch, show_accuracy=True,
-          validation_data=(X_test, y_test))
+model.add(Dense(nb_classes))
+model.add(Activation('softmax'))
+sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(loss='categorical_crossentropy',
+              optimizer='rmsprop', metrics =["accuracy"])
+model.fit(X_train, Y_train, batch_size=batch_size,
+          nb_epoch=nb_epoch, validation_data=(X_test, Y_test))
 
-score, acc = model.evaluate(X_test, y_test, batch_size=batch_size,
-                            show_accuracy=True)
+score, acc = model.evaluate(X_test, Y_test, batch_size=batch_size)
 print('Test score:', score)
 print('Test accuracy:', acc)
+
+json_string = model.to_json()
+open('saved_models/TEST_CNN_noED_6ep2.json', 'w').write(json_string)
+model.save_weights('saved_models/TEST_CNN_noED_6ep_weights2.h5')

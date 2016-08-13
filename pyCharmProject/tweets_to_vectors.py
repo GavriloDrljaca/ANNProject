@@ -2,6 +2,7 @@ import logging
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 from gensim import corpora, models, similarities, utils
+from twitterData import *
 from pprint import pprint  # pretty-printer
 
 
@@ -36,19 +37,15 @@ def load_stoplist(file):
     stoplist_words = stoplist_words.replace("\\n", " ")
     return stoplist_words.split();
 
-
 """
+X_train, y_train = create_tweets_data(["train_data/auto_tweets",  "train_data/fashion_tweets", "train_data/music_tweets", "train_data/science_tweets", "train_data/sport_tweets", "train_data/politics_tweets"])
+X_test, y_test = create_tweets_data(["test_data/tw_auto_test",  "test_data/tw_fashion_test","test_data/tw_music_test","test_data/tw_science_test", "test_data/tw_sport_test", "test_data/tw_politics_test"])
+
+print_tweets_to_file('./all_tweets', X_train)
+print_tweets_to_file('./all_tweets', X_test)
+
 create_dictionary('all_tweets', 'test_dict', 'stoplist.txt')
 dictionary = corpora.Dictionary
 my_dict = dictionary.load('test_dict.dict')
 print(my_dict)
-"""
-"""
-new_doc = ["He brought joy to millions @TomCruise surprises",
-           "@JeffGordonWeb at  #NASCARawards with a special send off! #AskMRN",
-           "ADIDAS IS NOT PLAYIN THIS YEAR"]
-# new_vec = my_dict.doc2bow(new_doc.lower().split())
-result = transfrom_tweets_to_arrays(my_dict, new_doc)
-pprint(result)
-print len(result)
 """

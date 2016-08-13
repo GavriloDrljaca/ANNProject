@@ -38,10 +38,10 @@ def create_OAuth():
 
     return auth
 
-def get_tweets_from_user(userID):
+def get_tweets_from_user(userID, num_of_tw):
     api =tweepy.API(create_OAuth())
 
-    tweets = api.user_timeline(userID, None, None, 200,None)
+    tweets = api.user_timeline(id = userID, count = num_of_tw)
 
     ret =[]
     for tw in tweets:
@@ -64,11 +64,12 @@ def get_tweets(tag, number_of_tweets, date):
             print e
     return tweets_text
 
-
-tweets = get_tweets('sport', '180', '2016-01-03')
-file_sport = open('train_data/sport_tweets', 'a')
+"""
+tweets = get_tweets('music', '180', '2016-02-31')
+file_sport = open('train_data/music_tweets', 'a')
 tweet_statuses = []
 for tweet in tweets:
     tweet_statuses.append(tweet.text.encode('utf-8'))
 file_sport.write(tweet_statuses.__str__())
 file_sport.write("\n")
+"""

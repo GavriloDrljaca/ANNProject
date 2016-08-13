@@ -20,16 +20,15 @@ def create_tweets_data(files):
 
 def print_tweets_to_file(filename, tweets):
     file = open(filename, 'a')
-    for tw in tweets:
-        file.write(tw+'\n')
+    tweet_statuses = []
+    for tweet in tweets:
+        tweet_statuses.append(tweet.encode('utf-8'))
+    file.write(tweet_statuses.__str__())
 
-"""
-X_train, y_train = create_tweets_data(["train_data/auto_tweets", "train_data/education_tweets", "train_data/fashion_tweets", "train_data/music_tweets", "train_data/science_tweets", "train_data/sport_tweets", "train_data/politics_tweets"])
-X_test, y_test = create_tweets_data(["test_data/tw_auto_test", "test_data/tw_education_test", "test_data/tw_fashion_test","test_data/tw_music_test","test_data/tw_science_test", "test_data/tw_sport_test", "test_data/tw_politics_test"])
 
-print_tweets_to_file('./all_tweets', X_train)
-print_tweets_to_file('./all_tweets', X_test)
-"""
+
+
+
 #x_train, y_train =  create_tweets_data(["auto_tweets", "education_tweets", "fashion_tweets", "science_tweets", "sport_tweets", "games_tweets", "politics_tweets"])
 #print "duzina: ", len(x_train),len(y_train)
 #print x_train[0:10]

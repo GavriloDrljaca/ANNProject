@@ -1,6 +1,6 @@
 import numpy as np
 from collections import Counter
-
+from decimal import *
 
 def compare_results(test_results, output_results):
     length = len(test_results)
@@ -40,8 +40,45 @@ def calculate_topic_percent(results):
         dict[key] = (float(c[idx]) / float(len(results)))*100
     return dict
 
+def winner(output): # output je vektor sa izlaza neuronske mreze
+    return max(enumerate(output), key=lambda x: x[1])[0]
 
+
+def winner_cut(output):
+    max_idx = 0;
+    max_val = 0;
+    for idx, val in enumerate(output):
+        if val>max_val:
+            max_val = val
+            max_idx = idx
+    if max_val<0.45:
+        return 6
+    else:
+        return max_idx
+
+
+def winner_array(outputs, cut):
+    ret = []
+
+    for output in outputs:
+        if (cut):
+            ret.append(winner_cut(output))
+        else:
+            ret.append(winner(output))
+
+    return ret
+
+def print_results_by_topic(alphabet, dict):
+
+    TWOPLACES = Decimal(10) ** -2
+    str = ""
+    for key in dict:
+        str+= alphabet[key] + " : " + Decimal(dict[key]).quantize(TWOPLACES).__str__() + "% \n"
+    return str
+
+'''
 x = [0, 1, 1, 2, 2, 3, 5, 6]
 y = [0, 0, 1, 0, 0, 3, 0, 5]
 print compare_results_by_topic(x, y)
 print "Percentege: ", calculate_topic_percent(x)
+'''
