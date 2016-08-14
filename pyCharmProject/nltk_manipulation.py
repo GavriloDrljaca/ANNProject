@@ -13,6 +13,7 @@ def stem_tweet(tweet, stemmer_type = "lancaster"):
     """
     :param tweet: string representing tweet
     :param stemmer_type: type of stemmer used (default value is lancaster)
+    :return: stemmed tweet
     :type tweet: str
     :type stemmer_type: str
     """
@@ -36,6 +37,32 @@ def stem_tweet(tweet, stemmer_type = "lancaster"):
     return ret_tw
 
 
+def get_stemmer(stemmer_type):
+    """
+    :param stemmer_type: type of stemmer used (lancaster, porter, snowball or regexp)
+    :return: stemmer object
+    """
+    if stemmer_type == "lancaster":
+        stemmer = LancasterStemmer()
+    elif stemmer_type == "snowball":
+        stemmer = SnowballStemmer("english")
+    elif stemmer_type == "porter":
+        stemmer = PorterStemmer()
+    elif stemmer_type == "regexp":
+        stemmer = RegexpStemmer("english")
+    else:
+        return None
+    return stemmer
+
+
+def stemm_train_of_tweets(tweet_train, stemmer_type):
+    ret_val = []
+    for tw in tweet_train:
+        ret_val.append(stem_tweet(tw, stemmer_type))
+    return ret_val
+
+
+"""
 tweets = extract_tweets_from_file("train_data/sport_tweets")
 tweets = tweets[200:220]
 
@@ -45,3 +72,5 @@ for tweet in tweets:
     print("Snowball: " + stem_tweet(tweet, "snowball"))
     print("Porter: " + stem_tweet(tweet, "porter"))
     print("Regexp: " + stem_tweet(tweet, "regexp"))
+
+"""
