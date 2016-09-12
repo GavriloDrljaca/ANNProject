@@ -35,6 +35,7 @@ def normalize_tweets(tweets):
         tw = tw.replace("!", " ")
         tw = tw.replace("/", " ")
         tw = tw.replace("_", " ")
+        #should remove - and " and "
 
         if(len(tw)>20):
             normalized_tweets.append(tw)
@@ -70,3 +71,9 @@ def remove_bad_codes_from_tweet(tweet):
 def get_normalized_tweets(filename):
     tweets = extract_tweets_from_file(filename)
     return normalize_tweets(tweets)
+
+tws = ['Klay, I almost lost to Kevin Hart." - #DraymondGreen to #StephenCurry https://t.co/y0dAFL4pvP', 'Legacy. We asked players what @KobeBryant has meant to the game.\nhttps://t.co/xyRj30YIWk',
+       'Agree. RT @jek_grigorjeva: Women should become more active in security policy #MSC2016 https://t.co/2DG5vsul4z',
+       'SpaceX successfully lands reusable rocket back on Earth and sets a course for Mars https://t.co/uVmVEmVtOQ https://t.co/BgBqG6EPnZ']
+
+print(normalize_tweets(tws))
